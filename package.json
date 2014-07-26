@@ -1,5 +1,5 @@
 {
-  "name": "cross-domain",
+  "name": "cors-toggle",
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
