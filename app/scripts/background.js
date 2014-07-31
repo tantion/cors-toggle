@@ -1,5 +1,17 @@
 'use strict';
 
+function getAllowHeader () {
+    var allowHeaders = localStorage.getItem('allowHeaders') || '';
+
+    if (!allowHeaders) {
+        allowHeaders = ['Authorization', 'Auth', 'Token', 'Access-Token', 'Access_Token', 'AccessToken', 'Code'];
+    } else {
+        allowHeaders = allowHeaders.split(',');
+    }
+
+    return allowHeaders;
+}
+
 function handleRequest (details) {
     var header;
     for (var i = 0; i < details.requestHeaders.length; ++i) {
@@ -13,34 +25,34 @@ function handleRequest (details) {
 }
 
 function handleRespone (details) {
-    var header,
-        allowHeaders = ['Authorization', 'Auth', 'Token', 'Access-Token', 'Access_Token', 'AccessToken', 'Code'],
-        originFinded = false,
-        headerFinded = false;
+    var header = null,
+        allowHeaders = getAllowHeader(),
+        originFound = false,
+        headerFound = false;
 
-    for (var i = 0; i < details.responseHeaders.length; ++i) {
+    for (var i = 0, len = details.responseHeaders.length; i < len; ++i) {
         header = details.responseHeaders[i];
-        if (!originFinded || !headerFinded) {
+        if (!originFound || !headerFound) {
             if (header.name === 'Access-Control-Allow-Origin') {
-                header.value = '*';
-                originFinded = true;
+                //header.value = origin;
+                originFound = true;
             }
             else if (header.name === 'Access-Control-Allow-Headers') {
-                header.value = allowHeaders.join(',');
-                headerFinded = true;
+                //header.value += ',' + allowHeaders.join(',');
+                headerFound = true;
             }
         } else {
             break;
         }
     }
 
-    if (!originFinded) {
+    if (!originFound) {
         details.responseHeaders.push({
             name: 'Access-Control-Allow-Origin',
-            value: '*'
+            value: '*',
         });
     }
-    if (!headerFinded) {
+    if (!headerFound) {
         details.responseHeaders.push({
             name: 'Access-Control-Allow-Headers',
             value: allowHeaders.join(',')
@@ -53,8 +65,8 @@ function handleRespone (details) {
 function setOn () {
     chrome.browserAction.setBadgeText({text: 'on'});
     chrome.browserAction.setBadgeBackgroundColor({color: [0, 0, 0, 0]});
-    chrome.webRequest.onBeforeSendHeaders.addListener(handleRequest, {urls: ['<all_urls>']}, ['blocking', 'requestHeaders']);
-    chrome.webRequest.onHeadersReceived.addListener(handleRespone, {urls: ['<all_urls>']}, ['blocking', 'responseHeaders']);
+    chrome.webRequest.onBeforeSendHeaders.addListener(handleRequest, {urls: ['<all_urls>'], types: ['xmlhttprequest']}, ['blocking', 'requestHeaders']);
+    chrome.webRequest.onHeadersReceived.addListener(handleRespone, {urls: ['<all_urls>'], types: ['xmlhttprequest']}, ['blocking', 'responseHeaders']);
 }
 function setOff () {
     chrome.browserAction.setBadgeText({text: 'off'});

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CORS Toggle Options</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <h2>CORS Toggle Options</h2>
+        <form action="" class="options-form">
+            <div class="options-block">
+                <label>Access-Control-Allow-Origin: *</label>
+            </div>
+            <div class="options-block">
+                <label for="allow-headers">Access-Control-Allow-Headers: </label>
+                <textarea id="allow-headers" placeholder="Authorization, Auth, Token, Access-Token, Access_Token, AccessToken, Code" type="text" class="options-allow-headers"></textarea>
+                <div class="options-em"><em>Split by Comma(,)</em></div>
+            </div>
+            <div class="options-block">
+                <input value="Save" type="submit" class="options-save">
+                <input value="Resume Default Setting" type="submit" class="options-resume">
+                <span class="options-tips"></span>
+            </div>
+        </form>
+    </div>
+    <script src="scripts/options.js"></script>
+</body>
+</html>
