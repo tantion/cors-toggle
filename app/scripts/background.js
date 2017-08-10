@@ -24,6 +24,12 @@ function handleRequest (details) {
     return {requestHeaders: details.requestHeaders};
 }
 
+// Though RFC 7230 says HTTP headers should be case-sensitive,
+// we could be nice to developers using lower-case headers.
+function lowerCaseEqual(a, b) {
+    return typeof a === 'string' && a.toLowerCase() === b;
+}
+
 function handleRespone (details) {
     var header = null,
         allowHeaders = getAllowHeader(),
@@ -33,11 +39,11 @@ function handleRespone (details) {
     for (var i = 0, len = details.responseHeaders.length; i < len; ++i) {
         header = details.responseHeaders[i];
         if (!originFound || !headerFound) {
-            if (header.name === 'Access-Control-Allow-Origin') {
+            if (lowerCaseEqual(header.name, 'access-control-allow-origin')) {
                 //header.value = origin;
                 originFound = true;
             }
-            else if (header.name === 'Access-Control-Allow-Headers') {
+            else if (lowerCaseEqual(header.name, 'access-control-allow-headers')) {
                 //header.value += ',' + allowHeaders.join(',');
                 headerFound = true;
             }
